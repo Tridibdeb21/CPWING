@@ -78,8 +78,8 @@ const OnlineJudges = () => {
   return (
     <div className="container animate-fade-in" style={{ paddingTop: '4rem', paddingBottom: '6rem' }}>
       <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-        <h1 style={{ fontSize: '3.5rem', marginBottom: '1rem' }}><span className="text-gradient">Online Judges</span></h1>
-        <p style={{ fontSize: '1.25rem', color: 'var(--text-secondary)', maxWidth: '700px', margin: '0 auto 2rem' }}>
+        <h1 style={{ fontSize: 'clamp(2rem, 8vw, 3.5rem)', marginBottom: '1rem' }}><span className="text-gradient">Online Judges</span></h1>
+        <p style={{ fontSize: 'clamp(1rem, 3.6vw, 1.25rem)', color: 'var(--text-secondary)', maxWidth: '700px', margin: '0 auto 2rem' }}>
           Put your skills to the test on these world-class practicing platforms and start competing today.
         </p>
         
@@ -92,7 +92,7 @@ const OnlineJudges = () => {
           border: '1px solid var(--accent-purple)', 
           borderRadius: 'var(--radius-md)',
           color: 'var(--text-primary)',
-          fontSize: '1.1rem',
+          fontSize: 'clamp(0.95rem, 3.4vw, 1.1rem)',
           lineHeight: '1.6'
         }}>
           <span style={{ color: 'var(--accent-purple)', fontWeight: 'bold' }}>Important:</span> Try to participate in <strong>Codeforces</strong>, <strong>CodeChef</strong>, and <strong>AtCoder</strong> contests regularly. These three judges are the most important among them for your growth as a competitive programmer.
@@ -105,7 +105,7 @@ const OnlineJudges = () => {
         animate="visible"
         style={{ 
           display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', 
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', 
           gap: '2rem' 
         }}
       >
@@ -148,7 +148,7 @@ const OnlineJudges = () => {
                   }}
                 />
               </div>
-              <h3 style={{ fontSize: '1.75rem', marginBottom: '1rem', color: 'var(--text-primary)' }}>{res.title}</h3>
+              <h3 style={{ fontSize: 'clamp(1.3rem, 5.2vw, 1.75rem)', marginBottom: '1rem', color: 'var(--text-primary)' }}>{res.title}</h3>
               <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6', marginBottom: '2rem' }}>
                 {res.description}
               </p>

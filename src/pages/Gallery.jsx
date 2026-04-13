@@ -27,10 +27,10 @@ const Gallery = () => {
   return (
     <div className="container animate-fade-in" style={{ paddingTop: '4rem', paddingBottom: '6rem' }}>
       <div style={{ textAlign: 'center', marginBottom: '5rem' }}>
-        <h1 style={{ fontSize: '3.5rem', marginBottom: '1.5rem', lineHeight: '1.2' }}>
+        <h1 style={{ fontSize: 'clamp(2rem, 8vw, 3.5rem)', marginBottom: '1.5rem', lineHeight: '1.2' }}>
           Participation in different <span className="text-gradient">IUPC and ICPC</span>
         </h1>
-        <p style={{ fontSize: '1.25rem', color: 'var(--text-secondary)', maxWidth: '800px', margin: '0 auto' }}>
+        <p style={{ fontSize: 'clamp(1rem, 3.6vw, 1.25rem)', color: 'var(--text-secondary)', maxWidth: '800px', margin: '0 auto' }}>
           Commemorating our participation and excellence in various national programming competitions, reflecting the dedication and collaborative spirit of the Premier University Computer Club competitive programming community.
         </p>
       </div>
@@ -41,7 +41,7 @@ const Gallery = () => {
         animate="visible"
         style={{ 
           display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', 
+          gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 280px), 1fr))', 
           gap: '2rem' 
         }}
       >
@@ -53,7 +53,7 @@ const Gallery = () => {
             className="glass-panel"
             style={{ padding: '0.75rem', overflow: 'hidden' }}
           >
-            <div style={{ borderRadius: 'var(--radius-md)', overflow: 'hidden', height: '300px' }}>
+            <div style={{ borderRadius: 'var(--radius-md)', overflow: 'hidden', height: 'clamp(220px, 55vw, 300px)' }}>
               <img 
                 src={`/gallery/${photo.img}`} 
                 alt={photo.title} 

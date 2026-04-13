@@ -20,8 +20,8 @@ const Learn = () => {
   return (
     <div className="container animate-fade-in" style={{ paddingTop: '4rem', paddingBottom: '6rem' }}>
       <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-        <h1 style={{ fontSize: '3.5rem', marginBottom: '1rem' }}><span className="text-gradient">Beginner's Guide</span></h1>
-        <p style={{ fontSize: '1.25rem', color: 'var(--text-secondary)', maxWidth: '700px', margin: '0 auto' }}>
+        <h1 style={{ fontSize: 'clamp(2rem, 8vw, 3.5rem)', marginBottom: '1rem' }}><span className="text-gradient">Beginner's Guide</span></h1>
+        <p style={{ fontSize: 'clamp(1rem, 3.6vw, 1.25rem)', color: 'var(--text-secondary)', maxWidth: '700px', margin: '0 auto' }}>
           Everything you need to know to kickstart your competitive programming journey, broken down into simple, manageable topics.
         </p>
       </div>
@@ -42,10 +42,10 @@ const Learn = () => {
           <motion.div key={item.id} variants={itemVariants}>
             <Link to={`/topic/${item.id}`} className="glass-panel row-link" style={{ 
               display: 'block', 
-              padding: '2.5rem',
+              padding: 'clamp(1.2rem, 4.5vw, 2.5rem)',
               textDecoration: 'none'
             }}>
-              <h3 style={{ fontSize: '1.75rem', color: 'var(--text-primary)', margin: '0 0 0.75rem 0', transition: 'color 0.2s' }} className="row-title">
+              <h3 style={{ fontSize: 'clamp(1.25rem, 5vw, 1.75rem)', color: 'var(--text-primary)', margin: '0 0 0.75rem 0', transition: 'color 0.2s' }} className="row-title">
                 {item.title}
               </h3>
               <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem', lineHeight: '1.7', fontSize: '1.1rem' }}>

@@ -60,11 +60,11 @@ const Motivation = () => {
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: '999px', fontSize: '0.875rem', fontWeight: '500', color: '#EF4444', marginBottom: '1.5rem' }}>
           <Sparkles size={16} /> For the days when the code won't run
         </div>
-        <h1 style={{ fontSize: '3.5rem', marginBottom: '1.5rem' }}>
+        <h1 style={{ fontSize: 'clamp(2rem, 8vw, 3.5rem)', marginBottom: '1.5rem' }}>
           Code with <span className="text-gradient">Passion</span>, <br />
           Conquer with <span style={{ color: 'var(--accent-blue)' }}>Logic</span>
         </h1>
-        <p style={{ fontSize: '1.25rem', color: 'var(--text-secondary)' }}>
+        <p style={{ fontSize: 'clamp(1rem, 3.6vw, 1.25rem)', color: 'var(--text-secondary)' }}>
           Competitive Programming is a marathon, not a sprint. When the verdicts are red and your rating is down, remember why you started.
         </p>
       </motion.div>
@@ -81,7 +81,7 @@ const Motivation = () => {
           <motion.div 
             key={idx} 
             variants={itemVariants}
-            className="glass-panel"
+            className="glass-panel motivation-card"
             style={{ display: 'flex', gap: '2rem', alignItems: 'start', padding: '2.5rem' }}
           >
             <div style={{ 
@@ -96,8 +96,8 @@ const Motivation = () => {
               {section.icon}
             </div>
             <div>
-              <h2 style={{ fontSize: '1.75rem', marginBottom: '1rem', color: 'var(--text-primary)' }}>{section.title}</h2>
-              <div style={{ color: 'var(--text-secondary)', fontSize: '1.125rem', lineHeight: '1.8', whiteSpace: 'pre-line' }}>
+              <h2 style={{ fontSize: 'clamp(1.3rem, 5.2vw, 1.75rem)', marginBottom: '1rem', color: 'var(--text-primary)' }}>{section.title}</h2>
+              <div style={{ color: 'var(--text-secondary)', fontSize: 'clamp(0.98rem, 3.4vw, 1.125rem)', lineHeight: '1.8', whiteSpace: 'pre-line' }}>
                 {section.content}
               </div>
             </div>
@@ -112,9 +112,9 @@ const Motivation = () => {
         transition={{ delay: 0.5 }}
         style={{ marginTop: '6rem', textAlign: 'center' }}
       >
-        <div className="glass-panel" style={{ display: 'inline-block', maxWidth: '700px', padding: '3rem', position: 'relative' }}>
+        <div className="glass-panel motivation-quote" style={{ display: 'inline-block', maxWidth: '700px', padding: '3rem', position: 'relative' }}>
           <Quote size={48} style={{ position: 'absolute', top: '1rem', left: '1rem', opacity: 0.1, color: 'var(--accent-blue)' }} />
-          <p style={{ fontSize: '1.5rem', fontStyle: 'italic', marginBottom: '1.5rem', color: 'var(--text-primary)' }}>
+          <p style={{ fontSize: 'clamp(1.1rem, 4.2vw, 1.5rem)', fontStyle: 'italic', marginBottom: '1.5rem', color: 'var(--text-primary)' }}>
             "It is not that I'm so smart. But I stay with the questions much longer."
           </p>
           <p style={{ fontWeight: '600', color: 'var(--accent-blue)' }}>— Albert Einstein</p>
@@ -132,6 +132,19 @@ const Motivation = () => {
           Open Codeforces <Zap size={18} />
         </button>
       </div>
+
+      <style>{`
+        @media (max-width: 768px) {
+          .motivation-card {
+            flex-direction: column !important;
+            gap: 1rem !important;
+            padding: 1.25rem !important;
+          }
+          .motivation-quote {
+            padding: 1.5rem !important;
+          }
+        }
+      `}</style>
     </div>
   );
 };

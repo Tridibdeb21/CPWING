@@ -176,8 +176,8 @@ const Resources = () => {
 
       {/* Header */}
       <div style={{ textAlign: 'center', marginBottom: '5rem' }}>
-        <h1 style={{ fontSize: '3.5rem', marginBottom: '1rem' }}><span className="text-gradient">Resources</span></h1>
-        <p style={{ fontSize: '1.125rem', color: 'var(--text-secondary)', maxWidth: '700px', margin: '0 auto' }}>
+        <h1 style={{ fontSize: 'clamp(2rem, 8vw, 3.5rem)', marginBottom: '1rem' }}><span className="text-gradient">Resources</span></h1>
+        <p style={{ fontSize: 'clamp(1rem, 3.4vw, 1.125rem)', color: 'var(--text-secondary)', maxWidth: '700px', margin: '0 auto' }}>
           We've curated the best platforms, video tutorials, and code templates to accelerate your competitive programming journey.
         </p>
       </div>
@@ -186,7 +186,7 @@ const Resources = () => {
       <div style={{ marginBottom: '4rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem' }}>
           <div style={{ width: '4px', height: '36px', background: '#EF4444', borderRadius: '4px' }} />
-          <h2 style={{ fontSize: '2rem', color: 'var(--text-primary)', margin: 0 }}>
+          <h2 style={{ fontSize: 'clamp(1.35rem, 5.8vw, 2rem)', color: 'var(--text-primary)', margin: 0 }}>
             🎥 Video Tutorials
           </h2>
         </div>
@@ -195,7 +195,7 @@ const Resources = () => {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem' }}
+          style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '2rem' }}
         >
           {videoTutorials.map((res, idx) => (
             <ResourceCard key={idx} res={res} btnLabel="Watch Now" />
@@ -207,7 +207,7 @@ const Resources = () => {
       <div style={{ marginBottom: '4rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem' }}>
           <div style={{ width: '4px', height: '36px', background: '#c0c0c0', borderRadius: '4px' }} />
-          <h2 style={{ fontSize: '2rem', color: 'var(--text-primary)', margin: 0 }}>
+          <h2 style={{ fontSize: 'clamp(1.35rem, 5.8vw, 2rem)', color: 'var(--text-primary)', margin: 0 }}>
             📦 Code Templates
           </h2>
         </div>
@@ -216,7 +216,7 @@ const Resources = () => {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem' }}
+          style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '2rem' }}
         >
           {codeResources.map((res, idx) => (
             <ResourceCard key={idx} res={res} btnLabel="Open on GitHub" />
@@ -228,7 +228,7 @@ const Resources = () => {
       <div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem' }}>
           <div style={{ width: '4px', height: '36px', background: 'var(--accent-blue)', borderRadius: '4px' }} />
-          <h2 style={{ fontSize: '2rem', color: 'var(--text-primary)', margin: 0 }}>
+          <h2 style={{ fontSize: 'clamp(1.35rem, 5.8vw, 2rem)', color: 'var(--text-primary)', margin: 0 }}>
             🌐 Websites & Platforms
           </h2>
         </div>
@@ -237,7 +237,7 @@ const Resources = () => {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem' }}
+          style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '2rem' }}
         >
           {resources.map((res, idx) => (
             <ResourceCard key={idx} res={res} btnLabel="Visit Website" />
