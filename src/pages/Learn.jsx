@@ -1,0 +1,79 @@
+import React from 'react';
+import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import { guideData } from './guideData';
+
+const Learn = () => {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1, 
+      transition: { staggerChildren: 0.1 } 
+    }
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: { y: 0, opacity: 1, transition: { type: 'spring', stiffness: 100 } }
+  };
+
+  return (
+    <div className="container animate-fade-in" style={{ paddingTop: '4rem', paddingBottom: '6rem' }}>
+      <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
+        <h1 style={{ fontSize: '3.5rem', marginBottom: '1rem' }}><span className="text-gradient">Beginner's Guide</span></h1>
+        <p style={{ fontSize: '1.25rem', color: 'var(--text-secondary)', maxWidth: '700px', margin: '0 auto' }}>
+          Everything you need to know to kickstart your competitive programming journey, broken down into simple, manageable topics.
+        </p>
+      </div>
+
+      <motion.div 
+        variants={containerVariants} 
+        initial="hidden" 
+        animate="visible" 
+        style={{ 
+          display: 'flex', 
+          flexDirection: 'column', 
+          gap: '1.5rem', 
+          maxWidth: '1200px', 
+          margin: '0 auto' 
+        }}
+      >
+        {guideData.map((item, idx) => (
+          <motion.div key={item.id} variants={itemVariants}>
+            <Link to={`/topic/${item.id}`} className="glass-panel row-link" style={{ 
+              display: 'block', 
+              padding: '2.5rem',
+              textDecoration: 'none'
+            }}>
+              <h3 style={{ fontSize: '1.75rem', color: 'var(--text-primary)', margin: '0 0 0.75rem 0', transition: 'color 0.2s' }} className="row-title">
+                {item.title}
+              </h3>
+              <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem', lineHeight: '1.7', fontSize: '1.1rem' }}>
+                {item.summary}
+              </p>
+              <div style={{ color: 'var(--accent-blue)', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '1.05rem' }}>
+                Start Learning This Topic →
+              </div>
+            </Link>
+          </motion.div>
+        ))}
+      </motion.div>
+
+      <style>{`
+        .row-link {
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .row-link:hover {
+          border-color: var(--accent-blue) !important;
+          background: rgba(59, 130, 246, 0.08) !important;
+          transform: translateX(10px);
+        }
+        .row-link:hover .row-title {
+          color: var(--accent-blue) !important;
+        }
+      `}</style>
+    </div>
+  );
+};
+
+export default Learn;
