@@ -71,6 +71,12 @@ const Blitz = () => {
           at the same moment, race to solve first, and move through timed rounds with live score sync.
         </p>
         <div className="blitz-cta-row">
+          <div className="blitz-link-note" role="note" aria-label="Blitz1v1 website note">
+            <span className="blitz-link-chip"><ExternalLink size={14} /> Blitz Website</span>
+            <span className="blitz-link-copy">
+              Below link will redirect to new website made by team <a href="https://codeforces.com/profile/MishkatIT" target="_blank" rel="noopener noreferrer" className="blitz-credit-link">MishkatIT</a>. Interested in playing blitz? Check it out.
+            </span>
+          </div>
           <a
             href="https://blitz1v1.onrender.com/"
             target="_blank"
@@ -136,15 +142,6 @@ const Blitz = () => {
             </article>
           ))}
         </div>
-      </motion.section>
-
-      <motion.section
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.28 }}
-        className="blitz-note"
-      >
-        This platform is developed by some competitive programmers of CP Wing.
       </motion.section>
 
       <style>{`
@@ -220,6 +217,60 @@ const Blitz = () => {
           padding: 0.55rem 0.8rem;
           font-size: 0.9rem;
           font-weight: 600;
+        }
+
+        .blitz-link-note {
+          flex: 1 0 100%;
+          display: grid;
+          gap: 0.48rem;
+          width: 100%;
+          max-width: 100%;
+          padding: 0.62rem 0.78rem 0.7rem;
+          border-radius: 12px;
+          border: 1px solid rgba(106, 226, 234, 0.34);
+          background:
+            linear-gradient(120deg, rgba(3, 180, 188, 0.16), rgba(25, 42, 64, 0.26));
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+
+        .blitz-link-chip {
+          width: fit-content;
+          display: inline-flex;
+          align-items: center;
+          gap: 0.33rem;
+          border-radius: 999px;
+          border: 1px solid rgba(106, 226, 234, 0.45);
+          background: rgba(106, 226, 234, 0.14);
+          color: #9ef5f8;
+          font-size: 0.72rem;
+          font-weight: 700;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          padding: 0.26rem 0.52rem;
+        }
+
+        .blitz-link-copy {
+          color: #e8f9ff;
+          font-size: 0.91rem;
+          line-height: 1.6;
+          font-weight: 500;
+        }
+
+        .blitz-credit-link {
+          color: #ffd9cf;
+          text-decoration: none;
+          font-weight: 800;
+          background: rgba(255, 144, 114, 0.2);
+          padding: 0.15rem 0.4rem;
+          border-radius: 6px;
+          border: 1px solid rgba(255, 144, 114, 0.5);
+          transition: all 0.2s ease;
+        }
+
+        .blitz-credit-link:hover {
+          color: #fff;
+          background: rgba(255, 144, 114, 0.35);
+          border-color: rgba(255, 144, 114, 0.8);
         }
 
         .blitz-grid {
@@ -318,6 +369,21 @@ const Blitz = () => {
         [data-theme='light'] .blitz-meta {
           color: #9a3f2a;
           background: rgba(255, 144, 114, 0.12);
+        }
+
+        [data-theme='light'] .blitz-link-note {
+          border-color: rgba(2, 134, 142, 0.35);
+          background: linear-gradient(120deg, rgba(3, 180, 188, 0.14), rgba(194, 243, 246, 0.6));
+        }
+
+        [data-theme='light'] .blitz-link-chip {
+          color: #07555a;
+          border-color: rgba(2, 134, 142, 0.45);
+          background: rgba(3, 180, 188, 0.16);
+        }
+
+        [data-theme='light'] .blitz-link-copy {
+          color: #11434f;
         }
 
         [data-theme='light'] .blitz-note {
