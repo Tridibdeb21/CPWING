@@ -84,9 +84,11 @@ const Home = () => {
 
       {/* Gallery Slider Section */}
       <div style={{ marginBottom: '6rem' }}>
-        <h2 style={{ textAlign: 'center', marginBottom: '1.5rem', fontSize: 'clamp(1.4rem, 6vw, 2rem)', color: 'var(--accent-blue)' }}>
-          Moment of CP Wing Activity
-        </h2>
+        <div className="activity-title-wrap">
+          <span className="activity-title-kicker">Campus Highlights</span>
+          <h2 className="activity-title">Moment of CP Wing Activity</h2>
+          <p className="activity-title-sub">Snapshots from live problem solving, team practice, and contest energy.</p>
+        </div>
         <div style={{ position: 'relative', maxWidth: '800px', margin: '0 auto', borderRadius: 'var(--radius-lg)', overflow: 'hidden', border: '1px solid var(--glass-border)', boxShadow: '0 20px 40px rgba(0,0,0,0.4)', background: 'rgba(0,0,0,0.2)' }}>
           <div style={{ display: 'flex', transform: `translateX(-${currentGalleryIndex * 100}%)`, transition: 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)' }}>
             {galleryImages.map((img, idx) => (
@@ -111,6 +113,66 @@ const Home = () => {
       </div>
 
       <style>{`
+        .activity-title-wrap {
+          text-align: center;
+          margin: 0 auto 1.6rem;
+          max-width: 850px;
+        }
+
+        .activity-title-kicker {
+          display: inline-flex;
+          margin-bottom: 0.65rem;
+          padding: 0.34rem 0.82rem;
+          border-radius: 999px;
+          border: 1px solid rgba(3, 180, 188, 0.35);
+          background: rgba(3, 180, 188, 0.12);
+          color: #8df4f8;
+          font-size: 0.78rem;
+          text-transform: uppercase;
+          letter-spacing: 0.12em;
+          font-weight: 700;
+        }
+
+        .activity-title {
+          margin: 0;
+          font-family: 'Sora', 'Plus Jakarta Sans', 'Inter', sans-serif;
+          font-size: clamp(1.45rem, 5.2vw, 2.45rem);
+          letter-spacing: -0.02em;
+          line-height: 1.2;
+          color: #f4f9ff;
+          text-shadow: 0 0 24px rgba(3, 180, 188, 0.25);
+        }
+
+        .activity-title::before {
+          content: '<';
+          color: #03B4BC;
+          margin-right: 0.42rem;
+        }
+
+        .activity-title::after {
+          content: '/>';
+          color: #FF9072;
+          margin-left: 0.38rem;
+        }
+
+        .activity-title-sub {
+          margin: 0.65rem auto 0;
+          max-width: 620px;
+          color: var(--text-secondary);
+          font-size: clamp(0.93rem, 2.8vw, 1.02rem);
+          line-height: 1.7;
+        }
+
+        [data-theme='light'] .activity-title {
+          color: #0f2230;
+          text-shadow: none;
+        }
+
+        [data-theme='light'] .activity-title-kicker {
+          color: #0d6970;
+          background: rgba(3, 180, 188, 0.11);
+        }
+
         @media (max-width: 768px) {
           .floating-logo {
             display: none !important;

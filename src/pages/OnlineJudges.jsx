@@ -7,14 +7,14 @@ const judges = [
     title: "Codeforces",
     description: "The world's leading competitive programming platform for weekly contests and high-quality problem sets.",
     url: "https://codeforces.com/",
-    logo: "https://cdn.simpleicons.org/codeforces/white",
+    logo: "/logos/cf_logo_clean.png",
     color: "#1F8ACB"
   },
   {
     title: "CodeChef",
     description: "A popular platform based in India hosting monthly Long Challenges, Lunchtimes, and Cook-offs.",
     url: "https://www.codechef.com/",
-    logo: "https://cdn.simpleicons.org/codechef/white",
+    logo: "/logos/codechef_logo_clean.png",
     color: "#5B4638"
   },
   {
@@ -35,7 +35,7 @@ const judges = [
     title: "LightOJ",
     description: "A legendary platform for Bangladeshi coders, featuring a massive collection of categorized classic problems.",
     url: "https://lightoj.com/",
-    logo: "https://static.lightoj.com/assets/loj-logo-inverted.png",
+    logo: "/logos/light_ojf_logo_clean.png",
     color: "#00ABB3"
   },
   {
@@ -43,21 +43,21 @@ const judges = [
     title: "LeetCode",
     description: "The standard platform for mastering algorithms and data structures for technical job interviews.",
     url: "https://leetcode.com/",
-    logo: "https://cdn.simpleicons.org/leetcode/white",
+    logo: "/logos/leetcode_logo_clean.png",
     color: "#FFA116"
   },
   {
     title: "Toph",
     description: "A modern Bangladeshi OJ hosting many prestigious university and national contests.",
     url: "https://toph.co/",
-    logo: "https://static.toph.co/images/blog-emblem_96p.png",
+    logo: "/logos/toph_logo_clean.png",
     color: "#3b82f6"
   },
   {
     title: "HackerRank",
     description: "A popular platform for practicing coding skills and preparing for technical interviews with a wide variety of domain-specific challenges.",
     url: "https://www.hackerrank.com/",
-    logo: "https://cdn.simpleicons.org/hackerrank/white",
+    logo: "/logos/hackerrank_logo_clean.png",
     color: "#2ec866"
   }
 ];

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom'
-import { Terminal, Map, Trophy, BookOpen, Menu, X, Sun, Moon, Layers, Globe, Heart } from 'lucide-react'
+import { Terminal, Map, Trophy, BookOpen, Menu, X, Sun, Moon, Layers, Globe, Heart, Swords } from 'lucide-react'
 
 // Layout Component
 const Navbar = ({ theme, toggleTheme }) => {
@@ -16,6 +16,7 @@ const Navbar = ({ theme, toggleTheme }) => {
     { name: 'Learn', path: '/learn', icon: <BookOpen size={18} /> },
     { name: 'Roadmap', path: '/roadmap', icon: <Map size={18} /> },
     { name: 'Online Judges', path: '/online-judges', icon: <Trophy size={18} /> },
+    { name: 'Blitz', path: '/blitz', icon: <Swords size={18} /> },
     { name: 'Resources', path: '/resources', icon: <Globe size={18} /> },
     { name: 'Gallery', path: '/gallery', icon: <Layers size={18} /> },
     { name: 'Motivation', path: '/motivation', icon: <Heart size={18} /> },
@@ -155,6 +156,7 @@ import Gallery from './pages/Gallery'
 import Learn from './pages/Learn'
 import Motivation from './pages/Motivation'
 import RoadmapDetail from './pages/RoadmapDetail'
+import Blitz from './pages/Blitz'
 
 function App() {
   const [theme, setTheme] = useState(() => {
@@ -178,6 +180,7 @@ function App() {
             <Route path="/roadmap" element={<Roadmap />} />
             <Route path="/learn" element={<Learn />} />
             <Route path="/online-judges" element={<OnlineJudges />} />
+            <Route path="/blitz" element={<Blitz />} />
             <Route path="/resources" element={<Resources />} />
             <Route path="/gallery" element={<Gallery />} />
             <Route path="/motivation" element={<Motivation />} />
