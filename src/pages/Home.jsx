@@ -72,7 +72,6 @@ const Home = () => {
           { icon: <Zap size={32} color="#f59e0b" />, title: 'Online Judges', desc: "Get familiar with top online practicing platforms like Codeforces, AtCoder, and LeetCode to sharpen your logical thinking." }
         ].map((feature, idx) => (
           <motion.div key={idx} variants={itemVariants} className="glass-panel" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <div style={{ background: 'var(--accent-blue)', opacity: 0.1, width: '64px', height: '64px', borderRadius: '16px', position: 'absolute', top: '2rem', left: '2rem' }}></div>
             <div style={{ width: '64px', height: '64px', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1 }}>
               {feature.icon}
             </div>
