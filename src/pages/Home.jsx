@@ -87,7 +87,7 @@ const Home = () => {
         <div className="activity-title-wrap">
           <span className="activity-title-kicker">Campus Highlights</span>
           <h2 className="activity-title">Moment of CP Wing Activity</h2>
-          <p className="activity-title-sub">Snapshots from live problem solving, team practice, and contest energy.</p>
+          <p className="activity-title-sub">Snapshots from live problem solving, team practice, and bootcamp.</p>
         </div>
         <div style={{ position: 'relative', maxWidth: '800px', margin: '0 auto', borderRadius: 'var(--radius-lg)', overflow: 'hidden', border: '1px solid var(--glass-border)', boxShadow: '0 20px 40px rgba(0,0,0,0.4)', background: 'rgba(0,0,0,0.2)' }}>
           <div style={{ display: 'flex', transform: `translateX(-${currentGalleryIndex * 100}%)`, transition: 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)' }}>

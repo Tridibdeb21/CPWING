@@ -42,6 +42,30 @@ const resources = [
     icon: <FileText size={28} />,
     color: "#22c55e",
     tag: "Website"
+  },
+  {
+    title: "TLE Eliminators CP Sheet",
+    description: "A handpicked Codeforces problem sheet curated to build rating and problem-solving depth in a structured order.",
+    url: "https://www.tle-eliminators.com/cp-sheet",
+    icon: <Book size={28} />,
+    color: "#ef4444",
+    tag: "Handpicked Sheet"
+  },
+  {
+    title: "A Code Daily",
+    description: "A focused practice platform with curated daily-style problems to keep your CP preparation consistent.",
+    url: "https://acodedaily.com/",
+    icon: <Code size={28} />,
+    color: "#06b6d4",
+    tag: "Practice Site"
+  },
+  {
+    title: "CF Tracker — All Contest Tracking",
+    description: "Track upcoming and ongoing Codeforces contests in one place with a clean, contest-first view.",
+    url: "https://cftracker.netlify.app/contests",
+    icon: <MonitorPlay size={28} />,
+    color: "#f59e0b",
+    tag: "Contest Tracker"
   }
 ];
 
@@ -65,12 +89,12 @@ const videoTutorials = [
     label: "YouTube Playlist"
   },
   {
-    title: "iamluv — CP Channel",
-    description: "A dedicated competitive programming channel covering problem-solving techniques, contest strategies, and editorial walkthroughs. Great for improving your CP mindset.",
-    url: "https://www.youtube.com/@iamluv",
+    title: "Contest Editorials & Post-Contest Discussion",
+    description: "Watch contest editorials and post-contest discussions to understand official approaches, alternative ideas, and practical problem-solving patterns.",
+    url: "https://www.youtube.com/@TLE_Eliminators",
     icon: <PlayCircle size={28} />,
     color: "#FF9072",
-    tag: "Follow",
+    tag: "Editorials",
     label: "YouTube Channel"
   }
 ];
@@ -193,8 +217,7 @@ const Resources = () => {
         <motion.div
           variants={containerVariants}
           initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
+          animate="visible"
           style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '2rem' }}
         >
           {videoTutorials.map((res, idx) => (
@@ -214,8 +237,7 @@ const Resources = () => {
         <motion.div
           variants={containerVariants}
           initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
+          animate="visible"
           style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '2rem' }}
         >
           {codeResources.map((res, idx) => (
@@ -235,8 +257,7 @@ const Resources = () => {
         <motion.div
           variants={containerVariants}
           initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
+          animate="visible"
           style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '2rem' }}
         >
           {resources.map((res, idx) => (
