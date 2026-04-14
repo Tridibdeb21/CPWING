@@ -6,8 +6,8 @@ import { roadmapData } from './roadmapData';
 
 const Roadmap = () => {
   return (
-    <div className="container" style={{ paddingTop: '4rem', paddingBottom: '6rem' }}>
-      <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
+    <div className="container roadmap-page" style={{ paddingTop: '4rem', paddingBottom: '6rem' }}>
+      <div className="roadmap-hero" style={{ textAlign: 'center', marginBottom: '4rem' }}>
         <h1 style={{ fontSize: '3rem', marginBottom: '1rem' }}><span className="text-gradient">Beginner's Roadmap</span></h1>
         <p style={{ fontSize: '1.125rem', color: 'var(--text-secondary)', maxWidth: '600px', margin: '0 auto' }}>
           An interactive, step-by-step path from writing your first "Hello World" down to mastering advanced graph algorithms. Click on any phase to learn more.
@@ -54,15 +54,27 @@ const Roadmap = () => {
       </div>
 
       <style>{`
+        .roadmap-page {
+          font-family: 'Plus Jakarta Sans', 'Inter', 'Segoe UI', sans-serif;
+        }
+
+        .roadmap-hero h1 {
+          font-family: 'Sora', 'Plus Jakarta Sans', 'Inter', sans-serif;
+          letter-spacing: -0.02em;
+        }
+
         .hover-card {
           transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
           border: 1px solid var(--glass-border);
+          background:
+            linear-gradient(140deg, rgba(255, 144, 114, 0.08), rgba(3, 180, 188, 0.06)),
+            var(--glass-bg);
         }
         
         .hover-card:hover {
           transform: translateY(-5px);
           border-color: var(--accent-blue);
-          box-shadow: 0 10px 30px rgba(3, 180, 188, 0.15);
+          box-shadow: 0 14px 30px rgba(3, 180, 188, 0.18);
           background: rgba(255, 255, 255, 0.05);
         }
 
@@ -74,6 +86,12 @@ const Roadmap = () => {
 
         .hover-card:hover h2 {
           color: var(--accent-blue) !important;
+        }
+
+        [data-theme='light'] .hover-card {
+          background:
+            linear-gradient(145deg, rgba(255, 144, 114, 0.07), rgba(2, 142, 147, 0.05)),
+            var(--glass-bg);
         }
       `}</style>
     </div>
