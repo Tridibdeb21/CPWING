@@ -142,6 +142,9 @@ const Footer = () => (
     <div className="container" style={{ textAlign: 'center', color: 'var(--text-secondary)' }}>
       <p>© {new Date().getFullYear()} Premier University Computer Club - Competitive Programming Wing.</p>
       <p style={{ fontSize: '0.875rem', marginTop: '0.5rem' }}>Empowering students to solve the unsolvable.</p>
+      <p style={{ fontSize: '0.875rem', marginTop: '1rem' }}>
+        Developers: <a href="https://codeforces.com/profile/ELSE_IF_TRIDIB21" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-blue)', textDecoration: 'none' }}>Tridib</a> & <a href="https://codeforces.com/profile/Abdullah_78" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-blue)', textDecoration: 'none' }}>Abdullah</a>
+      </p>
     </div>
   </footer>
 )
