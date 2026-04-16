@@ -151,15 +151,15 @@ const Footer = () => (
 
 // Pages
 import Home from './pages/Home'
-import Roadmap from './pages/Roadmap'
 import TopicDetail from './pages/TopicDetail'
 import Resources from './pages/Resources'
-import OnlineJudges from './pages/OnlineJudges'
 import Gallery from './pages/Gallery'
 import Learn from './pages/Learn'
 import Motivation from './pages/Motivation'
 import RoadmapDetail from './pages/RoadmapDetail'
 import Blitz from './pages/Blitz'
+import Level0 from './pages/Level0'
+import Level1 from './pages/Level1'
 
 function App() {
   const [theme, setTheme] = useState(() => {
@@ -180,9 +180,11 @@ function App() {
         <main style={{ flex: 1 }}>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/roadmap" element={<Roadmap />} />
+            <Route path="/roadmap" element={<Level0 />} />
             <Route path="/learn" element={<Learn />} />
-            <Route path="/online-judges" element={<OnlineJudges />} />
+            <Route path="/online-judges" element={<Level1 />} />
+            <Route path="/level0" element={<Level0 />} />
+            <Route path="/level1" element={<Level1 />} />
             <Route path="/blitz" element={<Blitz />} />
             <Route path="/resources" element={<Resources />} />
             <Route path="/gallery" element={<Gallery />} />
