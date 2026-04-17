@@ -156,14 +156,22 @@ import Resources from './pages/Resources'
 import Gallery from './pages/Gallery'
 import Learn from './pages/Learn'
 import Motivation from './pages/Motivation'
+import Roadmap from './pages/Roadmap'
 import RoadmapDetail from './pages/RoadmapDetail'
 import Blitz from './pages/Blitz'
 import Level0 from './pages/Level0'
 import Level1 from './pages/Level1'
+import OnlineJudges from './pages/OnlineJudges'
 
 function App() {
   const [theme, setTheme] = useState(() => {
-    return localStorage.getItem('theme') || 'dark';
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      return savedTheme;
+    }
+    // Set dark mode as default in localStorage
+    localStorage.setItem('theme', 'dark');
+    return 'dark';
   });
 
   useEffect(() => {
@@ -180,9 +188,9 @@ function App() {
         <main style={{ flex: 1 }}>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/roadmap" element={<Level0 />} />
+            <Route path="/roadmap" element={<Roadmap />} />
             <Route path="/learn" element={<Learn />} />
-            <Route path="/online-judges" element={<Level1 />} />
+            <Route path="/online-judges" element={<OnlineJudges />} />
             <Route path="/level0" element={<Level0 />} />
             <Route path="/level1" element={<Level1 />} />
             <Route path="/blitz" element={<Blitz />} />

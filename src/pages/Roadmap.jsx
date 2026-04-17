@@ -24,11 +24,16 @@ const Roadmap = () => {
             transition={{ duration: 0.5, delay: idx * 0.1 }}
           >
             <Link to={`/roadmap/${phase.id}`} className="glass-panel hover-card" style={{ display: 'block', position: 'relative', overflow: 'hidden', textDecoration: 'none' }}>
-              {/* Phase Badge */}
+              
+              {/* Phase Badge - First */}
               <div style={{ 
-                  position: 'absolute', top: 0, right: 0, 
-                  background: 'var(--accent-gradient)', padding: '0.5rem 1.5rem', 
-                  borderBottomLeftRadius: 'var(--radius-lg)', fontWeight: 'bold',
+                  display: 'inline-block',
+                  background: 'var(--accent-gradient)', 
+                  padding: '0.35rem 1rem', 
+                  borderRadius: 'var(--radius-lg)', 
+                  fontWeight: 'bold',
+                  fontSize: '0.9rem',
+                  marginBottom: '1rem',
                   boxShadow: '0 4px 12px rgba(3, 180, 188, 0.3)'
                 }}>
                 Phase {idx + 1}
@@ -38,6 +43,7 @@ const Roadmap = () => {
                 {phase.title}
                 <ArrowRight size={20} className="arrow-icon" style={{ opacity: 0, transition: 'all 0.3s' }} />
               </h2>
+              
               <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem', fontSize: '1.1rem' }}>{phase.description}</p>
               
               <ul style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem' }}>

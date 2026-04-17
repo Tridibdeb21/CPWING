@@ -106,7 +106,9 @@ const OnlineJudges = () => {
         style={{ 
           display: 'grid', 
           gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', 
-          gap: '2rem' 
+          gap: '2rem',
+          maxWidth: '1200px',
+          margin: '0 auto'
         }}
       >
         {judges.map((res, idx) => (
