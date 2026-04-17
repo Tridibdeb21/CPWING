@@ -60,6 +60,9 @@ const Home = () => {
           <Link to="/roadmap" className="btn-secondary" style={{ padding: '1rem 2rem', fontSize: '1.125rem' }}>
             View Roadmap
           </Link>
+          <Link to="/contests" className="btn-secondary" style={{ padding: '1rem 2rem', fontSize: '1.125rem' }}>
+            Upcoming CF Contest
+          </Link>
         </motion.div>
       </div>
 

@@ -24,6 +24,11 @@ const Learn = () => {
         <p style={{ fontSize: 'clamp(1rem, 3.6vw, 1.25rem)', color: 'var(--text-secondary)', maxWidth: '700px', margin: '0 auto' }}>
           Everything you need to know to kickstart your competitive programming journey, broken down into simple, manageable topics.
         </p>
+        <div style={{ marginTop: '1.25rem' }}>
+          <Link to="/whiteboard" className="btn-secondary" style={{ padding: '0.8rem 1.2rem', fontWeight: '600' }}>
+            Open Dry Run Whiteboard
+          </Link>
+        </div>
       </div>
 
       <motion.div 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom'
-import { Terminal, Map, Trophy, BookOpen, Menu, X, Sun, Moon, Layers, Globe, Heart, Swords } from 'lucide-react'
+import { Terminal, Map, Trophy, BookOpen, Menu, X, Sun, Moon, Layers, Globe, Heart, Swords, PenTool } from 'lucide-react'
 
 // Layout Component
 const Navbar = ({ theme, toggleTheme }) => {
@@ -18,6 +18,7 @@ const Navbar = ({ theme, toggleTheme }) => {
     { name: 'Online Judges', path: '/online-judges', icon: <Trophy size={18} /> },
     { name: 'Blitz', path: '/blitz', icon: <Swords size={18} /> },
     { name: 'Resources', path: '/resources', icon: <Globe size={18} /> },
+    { name: 'Whiteboard', path: '/whiteboard', icon: <PenTool size={18} /> },
     { name: 'Gallery', path: '/gallery', icon: <Layers size={18} /> },
     { name: 'Motivation', path: '/motivation', icon: <Heart size={18} /> },
   ];
@@ -162,6 +163,8 @@ import Blitz from './pages/Blitz'
 import Level0 from './pages/Level0'
 import Level1 from './pages/Level1'
 import OnlineJudges from './pages/OnlineJudges'
+import Contests from './pages/Contests'
+import Whiteboard from './pages/Whiteboard'
 
 function App() {
   const [theme, setTheme] = useState(() => {
@@ -190,7 +193,9 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/roadmap" element={<Roadmap />} />
             <Route path="/learn" element={<Learn />} />
+            <Route path="/whiteboard" element={<Whiteboard />} />
             <Route path="/online-judges" element={<OnlineJudges />} />
+            <Route path="/contests" element={<Contests />} />
             <Route path="/level0" element={<Level0 />} />
             <Route path="/level1" element={<Level1 />} />
             <Route path="/blitz" element={<Blitz />} />

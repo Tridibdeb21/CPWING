@@ -386,6 +386,18 @@ const Blitz = () => {
           color: #11434f;
         }
 
+        [data-theme='light'] .blitz-credit-link {
+          color: #7a2e1c;
+          background: rgba(255, 144, 114, 0.26);
+          border-color: rgba(180, 71, 38, 0.55);
+        }
+
+        [data-theme='light'] .blitz-credit-link:hover {
+          color: #ffffff;
+          background: #b74a2a;
+          border-color: #9d3d21;
+        }
+
         [data-theme='light'] .blitz-note {
           color: #9a3f2a;
           background: rgba(255, 144, 114, 0.09);
