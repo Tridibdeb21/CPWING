@@ -21,7 +21,7 @@ const Level0 = () => {
 	const level0Data = {
 		cycle1: {
 			title: 'Cycle 1: C++ Fundamentals & Operators',
-			topics: ['Variables', 'Data Types', 'Operators', 'Input/Output'],
+			topics: ['Variables', 'Data Types', 'Operators', 'Input/Output', 'Conditional Statements'],
 			resources: [
 				{ title: 'C++ Programming Intro - GeeksforGeeks', url: 'https://www.geeksforgeeks.org/cpp-programming-intro/' },
 				{ title: 'Basic Input and Output in C++', url: 'https://www.geeksforgeeks.org/basic-input-output-c/' },
@@ -131,9 +131,34 @@ const Level0 = () => {
 						</motion.div>
 					</div>
 
-					<div>
+					<div style={{
+						textAlign: 'center',
+						padding: '1.25rem',
+						borderRadius: '12px',
+						border: '1px solid rgba(3, 180, 188, 0.25)',
+						background: 'linear-gradient(135deg, rgba(3, 180, 188, 0.1) 0%, rgba(255, 144, 114, 0.08) 100%)'
+					}}>
 						<h3 style={{ fontSize: '1.1rem', fontWeight: '600', marginBottom: '1rem', color: 'var(--accent-blue)' }}>Contest</h3>
-						<a href={data.contest} target="_blank" rel="noopener noreferrer" className="glass-panel" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '1rem 1.2rem', textDecoration: 'none', color: 'var(--text-primary)', background: 'rgba(3, 180, 188, 0.08)' }}>
+						<a
+							href={data.contest}
+							target="_blank"
+							rel="noopener noreferrer"
+							style={{
+								display: 'inline-flex',
+								alignItems: 'center',
+								justifyContent: 'center',
+								gap: '0.5rem',
+								padding: '0.95rem 1.5rem',
+								minWidth: '180px',
+								textDecoration: 'none',
+								color: '#ffffff',
+								background: 'linear-gradient(135deg, var(--accent-blue) 0%, rgba(255, 144, 114, 0.9) 100%)',
+								borderRadius: '999px',
+								fontWeight: 600,
+								boxShadow: '0 10px 24px rgba(3, 180, 188, 0.28)',
+								transition: 'transform 0.2s ease, box-shadow 0.2s ease'
+							}}
+						>
 							Join Contest
 							<ExternalLink size={16} />
 						</a>
