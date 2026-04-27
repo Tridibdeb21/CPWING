@@ -179,6 +179,9 @@ const Level1 = () => {
 
 				<motion.div variants={itemVariants} style={{ marginTop: '2rem' }} className="glass-panel">
 					<h3 style={{ marginBottom: '1rem' }}>Unlimited Contest</h3>
+					<p style={{ marginBottom: '1rem', color: 'var(--text-secondary)', fontSize: '0.95rem' }}>
+						After completing both cycles, start the unlimited contest for full practice.
+					</p>
 					<a href={level1Data.unlimited} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.9rem 1.2rem', textDecoration: 'none', color: '#fff', background: 'linear-gradient(135deg, var(--accent-blue), rgba(255, 144, 114, 0.8))', borderRadius: '8px', fontWeight: 600 }}>
 						Start Unlimited Practice
 						<ExternalLink size={16} />
