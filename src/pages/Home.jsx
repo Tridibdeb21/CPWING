@@ -1,12 +1,23 @@
 import React, { useState, useEffect } from 'react';
+// eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion';
 import { Code, Zap, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
 
 const galleryImages = ['first.jpg','second.jpg','third.jpg','fourth.jpg','fifth.jpg','sixth.jpg','seventh.jpg','eightt.jpg','ninth.jpg','tenth.jpg'];
 
 const Home = () => {
   const [currentGalleryIndex, setCurrentGalleryIndex] = useState(0);
+  const [notices, setNotices] = useState([]);
+
+  useEffect(() => {
+    const loadNotices = async () => {
+      const { data } = await supabase.from('notices').select('id, title, message').eq('active', true).order('created_at', { ascending: false }).limit(10);
+      setNotices(data ?? []);
+    };
+    loadNotices();
+  }, []);
 
   const nextSlide = () => setCurrentGalleryIndex((prev) => (prev === galleryImages.length - 1 ? 0 : prev + 1));
   const prevSlide = () => setCurrentGalleryIndex((prev) => (prev === 0 ? galleryImages.length - 1 : prev - 1));
@@ -32,7 +43,8 @@ const Home = () => {
   };
 
   return (
-    <div className="container animate-fade-in" style={{ paddingTop: 'clamp(3rem, 8vw, 6rem)', paddingBottom: 'clamp(3rem, 8vw, 6rem)' }}>
+    <div className="container animate-fade-in" style={{ paddingTop: 'clamp(1rem, 3vw, 2rem)', paddingBottom: 'clamp(3rem, 8vw, 6rem)' }}>
+      {notices.length > 0 && <div className="home-notice-bar" aria-label="Latest notices"><div className="home-notice-track">{[...notices, ...notices].map((notice, index) => <span key={`${notice.id}-${index}`}><strong>{notice.title}:</strong> {notice.message}</span>)}</div></div>}
       <div style={{ textAlign: 'center', maxWidth: '1000px', margin: '0 auto 5rem', position: 'relative' }}>
         <motion.img className="floating-logo" src="https://cdn.simpleicons.org/codeforces/03B4BC" alt="Codeforces" style={{ position: 'absolute', top: '5%', left: '-5%', width: '55px', opacity: 0.5, zIndex: -1, filter: 'drop-shadow(0 0 10px rgba(3, 180, 188, 0.4))' }} animate={{ y: [0, -20, 0], rotate: [0, 5, -5, 0] }} transition={{ repeat: Infinity, duration: 4, ease: 'easeInOut' }} />
         <motion.img className="floating-logo" src="https://cdn.simpleicons.org/codechef/FF9072" alt="CodeChef" style={{ position: 'absolute', top: '15%', right: '-5%', width: '65px', opacity: 0.5, zIndex: -1, filter: 'drop-shadow(0 0 10px rgba(255, 144, 114, 0.4))' }} animate={{ y: [0, 20, 0], rotate: [0, -5, 5, 0] }} transition={{ repeat: Infinity, duration: 5, ease: 'easeInOut', delay: 1 }} />

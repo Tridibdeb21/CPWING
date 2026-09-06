@@ -1,21 +1,58 @@
 import React, { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom'
-import { Terminal, Map, Trophy, BookOpen, Menu, X, Sun, Moon, Layers, Globe, Heart, Swords, PenTool } from 'lucide-react'
+import { Bell, ExternalLink, MessageCircle, Terminal, Map, Trophy, BookOpen, Menu, X, Sun, Moon, Layers, Globe, Heart, Swords, PenTool, UserRound } from 'lucide-react'
+import { AuthProvider } from './context/AuthProvider'
+import { useAuth } from './context/useAuth'
+import ProtectedRoute from './components/ProtectedRoute'
+import { supabase } from './lib/supabase'
 
 // Layout Component
 const Navbar = ({ theme, toggleTheme }) => {
   const [isOpen, setIsOpen] = React.useState(false);
+  const [profile, setProfile] = React.useState(null);
+  const [latestRating, setLatestRating] = React.useState(null);
+  const [chatOpen, setChatOpen] = React.useState(false);
+  const [chatMessages, setChatMessages] = React.useState([]);
   const location = useLocation();
+  const { user } = useAuth();
 
   React.useEffect(() => {
     setIsOpen(false);
+    setChatOpen(false);
   }, [location.pathname]);
+
+  React.useEffect(() => {
+    if (!user) {
+      setProfile(null)
+      setLatestRating(null)
+      return
+    }
+
+    const loadAccountSummary = async () => {
+      const [{ data: profileData }, { data: ratingData }] = await Promise.all([
+        supabase.from('profiles').select('full_name, student_id, department, batch, codeforces_handle, avatar_url, github_url, linkedin_url, skills, interests').eq('id', user.id).maybeSingle(),
+        supabase.from('monthly_ratings').select('rating, rating_change, month').eq('user_id', user.id).order('month', { ascending: false }).limit(1).maybeSingle()
+      ])
+      setProfile(profileData)
+      setLatestRating(ratingData)
+      const { data: messages } = await supabase.from('admin_messages').select('id, title, message, created_at').or(`recipient_id.is.null,recipient_id.eq.${user.id}`).order('created_at', { ascending: true }).limit(50)
+      setChatMessages(messages ?? [])
+    }
+
+    loadAccountSummary()
+  }, [user]);
 
   const navLinks = [
     { name: 'Home', path: '/', icon: <Terminal size={18} /> },
     { name: 'Learn', path: '/learn', icon: <BookOpen size={18} /> },
     { name: 'Roadmap', path: '/roadmap', icon: <Map size={18} /> },
     { name: 'Online Judges', path: '/online-judges', icon: <Trophy size={18} /> },
+    { name: 'Leaderboard', path: '/leaderboard', icon: <Trophy size={18} /> },
+    { name: 'Contest History', path: '/contest-history', icon: <Trophy size={18} /> },
+    { name: 'Rating Analytics', path: '/analytics', icon: <Trophy size={18} /> },
+    { name: 'Notifications', path: '/notifications', icon: <Bell size={18} /> },
+    { name: 'Feedback', path: '/feedback', icon: <MessageCircle size={18} /> },
+    { name: 'Register Contest', path: '/contests/register', icon: <Trophy size={18} /> },
     { name: 'Blitz', path: '/blitz', icon: <Swords size={18} /> },
     { name: 'Resources', path: '/resources', icon: <Globe size={18} /> },
     { name: 'Whiteboard', path: '/whiteboard', icon: <PenTool size={18} /> },
@@ -25,6 +62,8 @@ const Navbar = ({ theme, toggleTheme }) => {
 
   const primaryMobileLinks = navLinks.slice(0, 3);
   const secondaryMobileLinks = navLinks.slice(3);
+  const primaryDesktopLinks = navLinks.filter(link => ['/','/learn','/roadmap','/leaderboard'].includes(link.path));
+  const secondaryDesktopLinks = navLinks.filter(link => !primaryDesktopLinks.includes(link));
 
   return (
     <nav style={{
@@ -40,8 +79,8 @@ const Navbar = ({ theme, toggleTheme }) => {
         </Link>
         
         {/* Desktop Nav */}
-        <div style={{ display: 'flex', gap: '2rem' }} className="desktop-nav">
-          {navLinks.map(link => {
+        <div style={{ display: 'flex', gap: '1.25rem' }} className="desktop-nav">
+          {primaryDesktopLinks.map(link => {
             const isActive = location.pathname === link.path;
             return (
               <Link key={link.path} to={link.path} style={{
@@ -55,6 +94,35 @@ const Navbar = ({ theme, toggleTheme }) => {
               </Link>
             )
           })}
+
+          <div className="desktop-more-menu">
+            <button className="desktop-more-trigger" onClick={() => { setIsOpen(prev => !prev); setChatOpen(false) }} aria-expanded={isOpen}>
+              <Menu size={17} /> More
+            </button>
+            {isOpen && <div className="desktop-more-dropdown">{secondaryDesktopLinks.map(link => <Link key={link.path} to={link.path}>{link.icon}{link.name}</Link>)}</div>}
+          </div>
+
+          <div className="account-menu">
+            <Link to={user ? '/dashboard' : '/login'} aria-label={user ? 'Open dashboard' : 'Sign in'} title={user ? 'Dashboard' : 'Sign in'} style={{ color: location.pathname === '/dashboard' ? 'var(--accent-blue)' : 'var(--text-secondary)', display: 'flex', alignItems: 'center' }}>
+              {profile?.avatar_url ? <img className="account-avatar" src={profile.avatar_url} alt="" /> : <UserRound size={19} />}
+            </Link>
+            {user && (
+              <div className="account-popover" role="status">
+                <p className="account-popover-label">STUDENT PROFILE</p>
+                <strong>{profile?.full_name || 'Profile not completed'}</strong>
+                <span>{profile?.student_id || user.email}</span>
+                {profile?.department && <span>{profile.department}{profile.batch ? ` · Batch ${profile.batch}` : ''}</span>}
+                {profile?.codeforces_handle && <span>CF: {profile.codeforces_handle}</span>}
+                {profile?.skills && <span>Skills: {profile.skills}</span>}
+                {profile?.interests && <span>Interests: {profile.interests}</span>}
+                {(profile?.github_url || profile?.linkedin_url) && <div className="account-socials">{profile.github_url && <a href={profile.github_url} target="_blank" rel="noreferrer" aria-label="GitHub profile">GitHub <ExternalLink size={13} /></a>}{profile.linkedin_url && <a href={profile.linkedin_url} target="_blank" rel="noreferrer" aria-label="LinkedIn profile">LinkedIn <ExternalLink size={13} /></a>}</div>}
+                {latestRating && <div className="account-rating"><span>Latest university rating</span><strong>{latestRating.rating} <em className={latestRating.rating_change >= 0 ? 'rating-positive' : 'rating-negative'}>{latestRating.rating_change >= 0 ? '+' : ''}{latestRating.rating_change}</em></strong></div>}
+                <Link className="account-popover-link" to="/profile">Edit profile</Link>
+              </div>
+            )}
+          </div>
+
+          {user && <div className="chat-menu"><button className="nav-icon-button" type="button" onClick={() => { setChatOpen(prev => !prev); setIsOpen(false) }} aria-label="Open CPWING chat" title="CPWING chat"><MessageCircle size={19} />{chatMessages.length > 0 && <span className="chat-count">{chatMessages.length}</span>}</button>{chatOpen && <div className="chat-popover"><div className="chat-popover-header"><strong>CPWING chat</strong><button type="button" onClick={() => setChatOpen(false)} aria-label="Close chat"><X size={16} /></button></div><div className="chat-popover-thread">{chatMessages.length === 0 ? <p className="chat-empty">No messages yet.</p> : chatMessages.map(item => <div className="chat-popover-message" key={item.id}><strong>{item.title}</strong><span>{item.message}</span><time>{new Date(item.created_at).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}</time></div>)}</div><Link className="chat-popover-footer" to="/notifications" onClick={() => setChatOpen(false)}>View all updates</Link></div>}</div>}
           
           <button onClick={toggleTheme} style={{ 
             background: 'rgba(128, 128, 128, 0.1)', border: '1px solid var(--glass-border)', 
@@ -127,11 +195,13 @@ const Navbar = ({ theme, toggleTheme }) => {
 
       <style>{`
         .desktop-nav { display: flex; }
+        .mobile-drawer { display: none; }
         .mobile-actions { display: none; }
         .mobile-quick-links { display: none; }
         @media (max-width: 768px) { .desktop-nav { display: none !important; } }
         @media (max-width: 768px) { .mobile-actions { display: flex !important; } }
         @media (max-width: 768px) { .mobile-quick-links { display: block !important; } }
+        @media (max-width: 768px) { .mobile-drawer { display: block; } }
         @media (max-width: 420px) { .brand-text { display: none !important; } }
       `}</style>
     </nav>
@@ -165,6 +235,21 @@ import Level1 from './pages/Level1'
 import OnlineJudges from './pages/OnlineJudges'
 import Contests from './pages/Contests'
 import Whiteboard from './pages/Whiteboard'
+import Login from './pages/Login'
+import Dashboard from './pages/Dashboard'
+import Profile from './pages/Profile'
+import AdminContest from './pages/AdminContest'
+import AdminMessages from './pages/AdminMessages'
+import Leaderboard from './pages/Leaderboard'
+import ContestHistory from './pages/ContestHistory'
+import AdminDashboard from './pages/AdminDashboard'
+import ContestRegistration from './pages/ContestRegistration'
+import AdminRegistrations from './pages/AdminRegistrations'
+import RatingAnalytics from './pages/RatingAnalytics'
+import Notifications from './pages/Notifications'
+import AdminNotices from './pages/AdminNotices'
+import Feedback from './pages/Feedback'
+import AdminFeedback from './pages/AdminFeedback'
 
 function App() {
   const [theme, setTheme] = useState(() => {
@@ -185,7 +270,8 @@ function App() {
   const toggleTheme = () => setTheme(prev => prev === 'light' ? 'dark' : 'light');
 
   return (
-    <Router>
+    <AuthProvider>
+      <Router>
       <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
         <Navbar theme={theme} toggleTheme={toggleTheme} />
         <main style={{ flex: 1 }}>
@@ -204,11 +290,29 @@ function App() {
             <Route path="/motivation" element={<Motivation />} />
             <Route path="/roadmap/:phaseId" element={<RoadmapDetail />} />
             <Route path="/topic/:topicId" element={<TopicDetail />} />
+            <Route path="/leaderboard" element={<Leaderboard />} />
+            <Route path="/login" element={<Login />} />
+            <Route element={<ProtectedRoute />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/profile" element={<Profile />} />
+              <Route path="/contest-history" element={<ContestHistory />} />
+              <Route path="/analytics" element={<RatingAnalytics />} />
+                            <Route path="/notifications" element={<Notifications />} />
+                            <Route path="/feedback" element={<Feedback />} />
+              <Route path="/contests/register" element={<ContestRegistration />} />
+                <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/admin/registrations" element={<AdminRegistrations />} />
+                <Route path="/admin/contest" element={<AdminContest />} />
+                <Route path="/admin/messages" element={<AdminMessages />} />
+                <Route path="/admin/notices" element={<AdminNotices />} />
+                            <Route path="/admin/feedback" element={<AdminFeedback />} />
+            </Route>
           </Routes>
         </main>
         <Footer />
       </div>
-    </Router>
+      </Router>
+    </AuthProvider>
   )
 }
 
