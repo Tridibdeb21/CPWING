@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowLeft, ImagePlus, Save, UserRound } from 'lucide-react'
+import { ArrowLeft, Save, UserRound } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/useAuth'
 
@@ -88,9 +88,9 @@ const Profile = () => {
           <label htmlFor="student_id">Student ID</label>
           <input id="student_id" name="student_id" value={profile.student_id} onChange={updateField} required />
           <label htmlFor="department">Department</label>
-          <input id="department" name="department" value={profile.department} onChange={updateField} />
+          <input id="department" name="department" value={profile.department} onChange={updateField} required />
           <label htmlFor="batch">Batch</label>
-          <input id="batch" name="batch" value={profile.batch} onChange={updateField} />
+          <input id="batch" name="batch" value={profile.batch} onChange={updateField} required />
           <label htmlFor="codeforces_handle">Codeforces handle</label>
           <input id="codeforces_handle" name="codeforces_handle" value={profile.codeforces_handle} onChange={updateField} placeholder="Enter your Codeforces handle" required />
           <label htmlFor="avatar_file">Profile image from your device</label>
