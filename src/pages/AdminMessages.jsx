@@ -14,17 +14,22 @@ const AdminMessages = () => {
   const [status, setStatus] = useState('')
   const [error, setError] = useState('')
   const [sending, setSending] = useState(false)
+  const [sentMessages, setSentMessages] = useState([])
 
   useEffect(() => {
     if (!user) return
     const loadAdminData = async () => {
-      const [{ data: admin }, { data: profiles, error: profileError }] = await Promise.all([
+      const [{ data: admin }, { data: profiles, error: profileError }, { data: messages, error: messagesError }] = await Promise.all([
         supabase.from('admin_users').select('user_id').eq('user_id', user.id).maybeSingle(),
-        supabase.from('profiles').select('id, full_name, student_id').order('full_name')
+        supabase.from('profiles').select('id, full_name, student_id').order('full_name'),
+        supabase.from('admin_messages').select('id, title, message, recipient_id, created_at, profiles(full_name, student_id)').eq('created_by', user.id).order('created_at', { ascending: false }).limit(50)
       ])
       setIsAdmin(Boolean(admin))
-      if (profileError) setError(profileError.message)
-      else setStudents(profiles ?? [])
+      if (profileError || messagesError) setError(profileError?.message || messagesError?.message)
+      else {
+        setStudents(profiles ?? [])
+        setSentMessages(messages ?? [])
+      }
     }
     loadAdminData()
   }, [user])
@@ -34,12 +39,13 @@ const AdminMessages = () => {
     setSending(true)
     setError('')
     setStatus('')
-    const { error: sendError } = await supabase.from('admin_messages').insert({ created_by: user.id, recipient_id: recipientId || null, title, message })
+    const { data: sentMessage, error: sendError } = await supabase.from('admin_messages').insert({ created_by: user.id, recipient_id: recipientId || null, title, message }).select('id, title, message, recipient_id, created_at, profiles(full_name, student_id)').single()
     if (sendError) setError(sendError.message)
     else {
       setStatus('Message sent successfully.')
       setTitle('')
       setMessage('')
+      setSentMessages((current) => [sentMessage, ...current])
     }
     setSending(false)
   }
@@ -67,6 +73,10 @@ const AdminMessages = () => {
         {status && <p className="form-message form-success"><CheckCircle2 size={16} /> {status}</p>}
         <button className="btn-primary" type="submit" disabled={sending}><Send size={18} /> {sending ? 'Sending...' : 'Send suggestion'}</button>
       </form>
+      <section className="sent-messages-section">
+        <div className="dashboard-section-heading"><span>Previously sent messages</span><small>Latest 50 messages</small></div>
+        {sentMessages.length === 0 ? <div className="dashboard-empty-state"><span>No messages sent yet.</span></div> : <div className="sent-message-list">{sentMessages.map((item) => <article className="glass-panel sent-message-item" key={item.id}><div><strong>{item.title}</strong><span>{item.message}</span><small>To: {item.profiles?.full_name || 'All students'}{item.profiles?.student_id ? ` (${item.profiles.student_id})` : ''} · {new Date(item.created_at).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}</small></div></article>)}</div>}
+      </section>
     </div>
   )
 }

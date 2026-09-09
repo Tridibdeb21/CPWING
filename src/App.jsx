@@ -5,6 +5,7 @@ import { AuthProvider } from './context/AuthProvider'
 import { useAuth } from './context/useAuth'
 import ProtectedRoute from './components/ProtectedRoute'
 import { supabase } from './lib/supabase'
+import { getReadMessageIds, markMessagesRead } from './utils/notificationReadState'
 
 // Layout Component
 const Navbar = ({ theme, toggleTheme }) => {
@@ -12,19 +13,24 @@ const Navbar = ({ theme, toggleTheme }) => {
   const [profile, setProfile] = React.useState(null);
   const [latestRating, setLatestRating] = React.useState(null);
   const [chatOpen, setChatOpen] = React.useState(false);
+  const [mobileAccountOpen, setMobileAccountOpen] = React.useState(false);
   const [chatMessages, setChatMessages] = React.useState([]);
+  const [unreadMessageCount, setUnreadMessageCount] = React.useState(0);
   const location = useLocation();
   const { user } = useAuth();
 
   React.useEffect(() => {
     setIsOpen(false);
     setChatOpen(false);
+    setMobileAccountOpen(false);
   }, [location.pathname]);
 
   React.useEffect(() => {
     if (!user) {
       setProfile(null)
       setLatestRating(null)
+      setChatMessages([])
+      setUnreadMessageCount(0)
       return
     }
 
@@ -37,10 +43,30 @@ const Navbar = ({ theme, toggleTheme }) => {
       setLatestRating(ratingData)
       const { data: messages } = await supabase.from('admin_messages').select('id, title, message, created_at').or(`recipient_id.is.null,recipient_id.eq.${user.id}`).order('created_at', { ascending: true }).limit(50)
       setChatMessages(messages ?? [])
+      setUnreadMessageCount((messages ?? []).filter((message) => !getReadMessageIds(user.id).has(message.id)).length)
     }
 
     loadAccountSummary()
   }, [user]);
+
+  React.useEffect(() => {
+    const handleMessagesRead = (event) => {
+      if (event.detail?.userId === user?.id) setUnreadMessageCount(0)
+    }
+    window.addEventListener('cpwing:messages-read', handleMessagesRead)
+    return () => window.removeEventListener('cpwing:messages-read', handleMessagesRead)
+  }, [user?.id])
+
+  const toggleChat = () => {
+    setChatOpen((open) => {
+      if (!open && user) {
+        markMessagesRead(user.id, chatMessages.map((message) => message.id))
+        setUnreadMessageCount(0)
+      }
+      return !open
+    })
+    setIsOpen(false)
+  }
 
   const navLinks = [
     { name: 'Home', path: '/', icon: <Terminal size={18} /> },
@@ -99,7 +125,7 @@ const Navbar = ({ theme, toggleTheme }) => {
             <button className="desktop-more-trigger" onClick={() => { setIsOpen(prev => !prev); setChatOpen(false) }} aria-expanded={isOpen}>
               <Menu size={17} /> More
             </button>
-            {isOpen && <div className="desktop-more-dropdown">{secondaryDesktopLinks.map(link => <Link key={link.path} to={link.path}>{link.icon}{link.name}</Link>)}</div>}
+            {isOpen && <div className="desktop-more-dropdown">{secondaryDesktopLinks.map(link => <Link className="nav-link-with-badge" key={link.path} to={link.path}>{link.icon}{link.name}{link.path === '/notifications' && unreadMessageCount > 0 && <span className="chat-count">{unreadMessageCount}</span>}</Link>)}</div>}
           </div>
 
           <div className="account-menu">
@@ -122,7 +148,7 @@ const Navbar = ({ theme, toggleTheme }) => {
             )}
           </div>
 
-          {user && <div className="chat-menu"><button className="nav-icon-button" type="button" onClick={() => { setChatOpen(prev => !prev); setIsOpen(false) }} aria-label="Open CPWING chat" title="CPWING chat"><MessageCircle size={19} />{chatMessages.length > 0 && <span className="chat-count">{chatMessages.length}</span>}</button>{chatOpen && <div className="chat-popover"><div className="chat-popover-header"><strong>CPWING chat</strong><button type="button" onClick={() => setChatOpen(false)} aria-label="Close chat"><X size={16} /></button></div><div className="chat-popover-thread">{chatMessages.length === 0 ? <p className="chat-empty">No messages yet.</p> : chatMessages.map(item => <div className="chat-popover-message" key={item.id}><strong>{item.title}</strong><span>{item.message}</span><time>{new Date(item.created_at).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}</time></div>)}</div><Link className="chat-popover-footer" to="/notifications" onClick={() => setChatOpen(false)}>View all updates</Link></div>}</div>}
+          {user && <div className="chat-menu"><button className="nav-icon-button" type="button" onClick={toggleChat} aria-label="Open CPWING chat" title="CPWING chat"><MessageCircle size={19} />{unreadMessageCount > 0 && <span className="chat-count">{unreadMessageCount}</span>}</button>{chatOpen && <div className="chat-popover"><div className="chat-popover-header"><strong>CPWING chat</strong><button type="button" onClick={() => setChatOpen(false)} aria-label="Close chat"><X size={16} /></button></div><div className="chat-popover-thread">{chatMessages.length === 0 ? <p className="chat-empty">No messages yet.</p> : chatMessages.map(item => <div className="chat-popover-message" key={item.id}><strong>{item.title}</strong><span>{item.message}</span><time>{new Date(item.created_at).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}</time></div>)}</div><Link className="chat-popover-footer" to="/notifications" onClick={() => setChatOpen(false)}>View all updates</Link></div>}</div>}
           
           <button onClick={toggleTheme} style={{ 
             background: 'rgba(128, 128, 128, 0.1)', border: '1px solid var(--glass-border)', 
@@ -135,6 +161,16 @@ const Navbar = ({ theme, toggleTheme }) => {
         </div>
 
         <div className="mobile-actions" style={{ alignItems: 'center', gap: '0.75rem' }}>
+          <div className="mobile-account-menu">
+            <button className="nav-icon-button" type="button" onClick={() => setMobileAccountOpen((open) => !open)} aria-expanded={mobileAccountOpen} aria-label={user ? 'Open account menu' : 'Sign in'} title={user ? 'Account menu' : 'Sign in'}>
+              {profile?.avatar_url ? <img className="account-avatar" src={profile.avatar_url} alt="" /> : <UserRound size={19} />}
+            </button>
+            {mobileAccountOpen && <div className="mobile-account-popover">
+              <Link to={user ? '/dashboard' : '/login'} onClick={() => setMobileAccountOpen(false)}>{user ? 'Dashboard' : 'Sign in'}</Link>
+              {user && <Link to="/profile" onClick={() => setMobileAccountOpen(false)}>Edit profile</Link>}
+            </div>}
+          </div>
+          {user && <div className="mobile-chat-menu"><button className="nav-icon-button" type="button" onClick={toggleChat} aria-label="Open CPWING chat" title="CPWING chat"><MessageCircle size={19} />{unreadMessageCount > 0 && <span className="chat-count">{unreadMessageCount}</span>}</button>{chatOpen && <div className="chat-popover mobile-chat-popover"><div className="chat-popover-header"><strong>CPWING chat</strong><button type="button" onClick={() => setChatOpen(false)} aria-label="Close chat"><X size={16} /></button></div><div className="chat-popover-thread">{chatMessages.length === 0 ? <p className="chat-empty">No messages yet.</p> : chatMessages.map(item => <div className="chat-popover-message" key={item.id}><strong>{item.title}</strong><span>{item.message}</span><time>{new Date(item.created_at).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}</time></div>)}</div><Link className="chat-popover-footer" to="/notifications" onClick={() => setChatOpen(false)}>View all updates</Link></div>}</div>}
           <button onClick={toggleTheme} style={{
             background: 'rgba(128, 128, 128, 0.1)', border: '1px solid var(--glass-border)',
             color: 'var(--text-primary)', cursor: 'pointer', display: 'flex',
@@ -208,6 +244,16 @@ const Navbar = ({ theme, toggleTheme }) => {
   )
 }
 
+const ScrollToTop = () => {
+  const { pathname } = useLocation()
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+  }, [pathname])
+
+  return null
+}
+
 const Footer = () => (
   <footer style={{ borderTop: '1px solid var(--glass-border)', padding: '3rem 0', marginTop: 'auto' }}>
     <div className="container" style={{ textAlign: 'center', color: 'var(--text-secondary)' }}>
@@ -236,6 +282,7 @@ import OnlineJudges from './pages/OnlineJudges'
 import Contests from './pages/Contests'
 import Whiteboard from './pages/Whiteboard'
 import Login from './pages/Login'
+import ResetPassword from './pages/ResetPassword'
 import Dashboard from './pages/Dashboard'
 import Profile from './pages/Profile'
 import AdminContest from './pages/AdminContest'
@@ -272,6 +319,7 @@ function App() {
   return (
     <AuthProvider>
       <Router>
+      <ScrollToTop />
       <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
         <Navbar theme={theme} toggleTheme={toggleTheme} />
         <main style={{ flex: 1 }}>
@@ -292,9 +340,10 @@ function App() {
             <Route path="/topic/:topicId" element={<TopicDetail />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route element={<ProtectedRoute />}>
               <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/profile" element={<Profile />} />
+              <Route path="/profile" element={<Profile />} />
               <Route path="/contest-history" element={<ContestHistory />} />
               <Route path="/analytics" element={<RatingAnalytics />} />
                             <Route path="/notifications" element={<Notifications />} />

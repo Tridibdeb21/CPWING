@@ -3,6 +3,7 @@ import { Bell, CalendarDays, CheckCircle2, MessageSquare, Trophy } from 'lucide-
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/useAuth'
 import { supabase } from '../lib/supabase'
+import { markMessagesRead } from '../utils/notificationReadState'
 
 const Notifications = () => {
   const { user } = useAuth()
@@ -20,6 +21,7 @@ const Notifications = () => {
       const queryError = contests.error || ratings.error || messages.error
       if (queryError) setError(queryError.message)
       else {
+        markMessagesRead(user.id, (messages.data ?? []).map((message) => message.id))
         const contestNotifications = (contests.data ?? []).map((contest) => ({ id: `contest-${contest.id}`, type: 'contest', title: 'New contest announcement', detail: contest.name, date: contest.created_at, icon: Trophy, link: '/contests/register' }))
         const ratingNotifications = (ratings.data ?? []).map((rating) => ({ id: `rating-${rating.id}`, type: 'rating', title: 'Rating published', detail: `Your rating is ${rating.rating} (${rating.rating_change >= 0 ? '+' : ''}${rating.rating_change})`, date: rating.calculated_at, icon: CheckCircle2, link: '/analytics' }))
         const messageNotifications = (messages.data ?? []).map((message) => ({ id: `message-${message.id}`, type: 'message', title: 'Admin suggestion received', detail: message.title, date: message.created_at, icon: MessageSquare, link: '/dashboard' }))
