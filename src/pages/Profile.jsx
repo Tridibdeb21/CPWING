@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { ArrowLeft, Save, UserRound } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/useAuth'
+import { batches, departments } from '../data/profileOptions'
 
 const emptyProfile = {
   full_name: '',
@@ -88,9 +89,15 @@ const Profile = () => {
           <label htmlFor="student_id">Student ID</label>
           <input id="student_id" name="student_id" value={profile.student_id} onChange={updateField} required />
           <label htmlFor="department">Department</label>
-          <input id="department" name="department" value={profile.department} onChange={updateField} required />
+          <select id="department" name="department" value={profile.department} onChange={updateField} required>
+            <option value="" disabled>Select department</option>
+            {departments.map((department) => <option key={department} value={department}>{department}</option>)}
+          </select>
           <label htmlFor="batch">Batch</label>
-          <input id="batch" name="batch" value={profile.batch} onChange={updateField} required />
+          <select id="batch" name="batch" value={profile.batch} onChange={updateField} required>
+            <option value="" disabled>Select batch</option>
+            {batches.map((batch) => <option key={batch} value={batch}>{batch}</option>)}
+          </select>
           <label htmlFor="codeforces_handle">Codeforces handle</label>
           <input id="codeforces_handle" name="codeforces_handle" value={profile.codeforces_handle} onChange={updateField} placeholder="Enter your Codeforces handle" required />
           <label htmlFor="avatar_file">Profile image from your device</label>
