@@ -15,10 +15,10 @@ const ProtectedRoute = () => {
     let mounted = true
     Promise.all([
       supabase.from('codeforces_verifications').select('user_id').eq('user_id', user.id).maybeSingle(),
-      supabase.from('profiles').select('id, codeforces_handle').eq('id', user.id).maybeSingle()
+      supabase.from('profiles').select('id, codeforces_handle, codeforces_verified').eq('id', user.id).maybeSingle()
     ]).then(([{ data: verification }, { data: profile }]) => {
       if (mounted) {
-        setProfileExists(Boolean(verification || profile?.codeforces_handle))
+        setProfileExists(Boolean(verification && profile?.codeforces_verified && profile?.codeforces_handle))
         setCheckedUserId(user.id)
       }
     })

@@ -23,6 +23,32 @@ const Navbar = ({ theme, toggleTheme }) => {
   }, [location.pathname])
 
   useEffect(() => {
+    const closeMoreMenu = (event) => {
+      if (!event.target.closest('.desktop-more-menu, .mobile-more-menu')) setIsOpen(false)
+    }
+    const closeMoreMenuOnEscape = (event) => {
+      if (event.key === 'Escape') setIsOpen(false)
+    }
+
+    document.addEventListener('pointerdown', closeMoreMenu)
+    document.addEventListener('keydown', closeMoreMenuOnEscape)
+    return () => {
+      document.removeEventListener('pointerdown', closeMoreMenu)
+      document.removeEventListener('keydown', closeMoreMenuOnEscape)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (isOpen && window.matchMedia('(max-width: 768px)').matches) {
+      document.body.style.overflow = 'hidden'
+    }
+
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [isOpen])
+
+  useEffect(() => {
     if (!user) {
       setProfile(null)
       setLatestRating(null)
@@ -101,7 +127,7 @@ const Navbar = ({ theme, toggleTheme }) => {
     <nav style={{ position: 'sticky', top: 0, zIndex: 50, background: 'var(--glass-bg)', backdropFilter: 'blur(12px)', borderBottom: '1px solid var(--glass-border)', padding: '1rem 0', transition: 'background-color 0.4s ease' }}>
       <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontWeight: '800', fontSize: '1.25rem' }}>
-          <img src="/logo.png" alt="ZeroCP Logo" style={{ width: '44px', height: '44px', objectFit: 'contain' }} />
+          <img src="/cp-wing-logo.png" alt="CP Wing Logo" style={{ width: '44px', height: '44px', objectFit: 'contain' }} />
           <span className="text-gradient brand-text">ZeroCP</span>
         </Link>
 
@@ -242,14 +268,14 @@ const Navbar = ({ theme, toggleTheme }) => {
             )
           })}
 
-          <button onClick={() => setIsOpen((prev) => !prev)} style={{ background: 'rgba(128, 128, 128, 0.12)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)', cursor: 'pointer', display: 'inline-flex', whiteSpace: 'nowrap', alignItems: 'center', gap: '0.35rem', padding: '0.45rem 0.75rem', borderRadius: '999px', fontWeight: '600' }} aria-label="Show more menu">
+          <button className="mobile-more-menu" onClick={() => setIsOpen((prev) => !prev)} style={{ background: 'rgba(128, 128, 128, 0.12)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)', cursor: 'pointer', display: 'inline-flex', whiteSpace: 'nowrap', alignItems: 'center', gap: '0.35rem', padding: '0.45rem 0.75rem', borderRadius: '999px', fontWeight: '600' }} aria-label="Show more menu">
             {isOpen ? <X size={16} /> : <Menu size={16} />} More
           </button>
         </div>
       </div>
 
       {isOpen && (
-        <div className="mobile-drawer" style={{ borderTop: '1px solid var(--glass-border)' }}>
+        <div className="mobile-drawer mobile-more-menu" style={{ borderTop: '1px solid var(--glass-border)' }}>
           <div className="container" style={{ display: 'flex', flexDirection: 'column', paddingTop: '0.75rem', paddingBottom: '0.75rem', gap: '0.25rem' }}>
             {secondaryMobileLinks.map((link) => {
               const isActive = location.pathname === link.path
@@ -266,7 +292,7 @@ const Navbar = ({ theme, toggleTheme }) => {
 
       <style>{`
         .desktop-nav { display: flex; }
-        .mobile-drawer { display: none; }
+        .mobile-drawer { display: none; position: absolute; top: 100%; left: 0; right: 0; z-index: 55; max-height: calc(100vh - 7rem); overflow-y: auto; background: var(--glass-bg); overscroll-behavior: contain; }
         .mobile-actions { display: none; }
         .mobile-quick-links { display: none; }
         .mobile-account-link { display: inline-flex; align-items: center; justify-content: center; color: var(--text-secondary); min-width: 34px; min-height: 34px; }
@@ -298,9 +324,7 @@ const Footer = () => (
     <div className="container" style={{ textAlign: 'center', color: 'var(--text-secondary)' }}>
       <p>© {new Date().getFullYear()} Premier University Computer Club - Competitive Programming Wing.</p>
       <p style={{ fontSize: '0.875rem', marginTop: '0.5rem' }}>Empowering students to solve the unsolvable.</p>
-      <p style={{ fontSize: '0.875rem', marginTop: '1rem' }}>
-        Developers: <a href="https://codeforces.com/profile/ELSE_IF_TRIDIB21" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-blue)', textDecoration: 'none' }}>Tridib</a> & <a href="https://codeforces.com/profile/Abdullah_78" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-blue)', textDecoration: 'none' }}>Abdullah</a>
-      </p>
+      <p style={{ fontSize: '0.875rem', marginTop: '1rem' }}>CP wing</p>
     </div>
   </footer>
 )

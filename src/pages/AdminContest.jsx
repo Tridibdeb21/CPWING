@@ -113,12 +113,12 @@ const AdminContest = () => {
     if (new Set(studentIds).size !== studentIds.length) return setError('The standings contain duplicate student IDs.')
     if (new Set(ranks).size !== ranks.length) return setError('The standings contain duplicate ranks.')
 
-    const ids = standings.map((row) => row.studentId)
-    const { data: profiles, error: profileError } = await supabase.from('profiles').select('id, student_id, full_name').in('student_id', ids)
-    if (!profiles && !profileError) return setError('No profiles were returned. Check that your admin user is registered in admin_users and that the admin profile-read policy is enabled.')
+    const { data: profiles, error: profileError } = await supabase.from('profiles').select('id, student_id, full_name')
+    if (profiles?.length === 0 && !profileError) return setError('No profiles were returned. Check that your admin user is registered in admin_users and that the admin profile-read policy is enabled.')
     if (profileError) return setError(profileError.message)
     const profileByStudentId = Object.fromEntries((profiles ?? []).map((profile) => [profile.student_id, profile]))
-    const userIds = (profiles ?? []).map((profile) => profile.id)
+    const allProfiles = profiles ?? []
+    const userIds = allProfiles.map((profile) => profile.id)
     const { data: existingRatings, error: ratingError } = await supabase.from('monthly_ratings').select('user_id, rating').in('user_id', userIds).order('month', { ascending: false })
     if (ratingError) return setError(ratingError.message)
     const { data: previousResults, error: resultError } = await supabase.from('contest_results').select('user_id').in('user_id', userIds)
@@ -127,7 +127,14 @@ const AdminContest = () => {
     for (const rating of existingRatings ?? []) latestRating[rating.user_id] ??= rating.rating
     const contestCounts = (previousResults ?? []).reduce((counts, result) => ({ ...counts, [result.user_id]: (counts[result.user_id] ?? 0) + 1 }), {})
     const participants = standings.map((row) => ({ ...row, ...profileByStudentId[row.studentId], rating: latestRating[profileByStudentId[row.studentId]?.id] ?? 1000, contestsCompleted: contestCounts[profileByStudentId[row.studentId]?.id] ?? 0 })).filter((row) => row.id)
-    setPreview(calculateUniversityRatings(participants))
+    const participantIds = new Set(participants.map((participant) => participant.id))
+    const nonParticipants = allProfiles
+      .filter((profile) => !participantIds.has(profile.id))
+      .map((profile) => {
+        const oldRating = latestRating[profile.id] ?? 1000
+        return { ...profile, studentId: profile.student_id, rank: Math.max(...standings.map((row) => row.rank), 0) + 1, solvedCount: 0, penalty: 0, oldRating, ratingChange: -100, newRating: Math.max(0, oldRating - 100), isNonParticipant: true }
+      })
+    setPreview([...calculateUniversityRatings(participants), ...nonParticipants])
     if (participants.length !== standings.length) setError('Some student IDs were not found in profiles and were excluded.')
   }
 

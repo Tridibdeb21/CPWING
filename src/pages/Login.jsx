@@ -24,6 +24,7 @@ const Login = () => {
   const [profile, setProfile] = useState({ full_name: '', student_id: '', department: '', batch: '', codeforces_handle: '' })
   const [codeforcesStatus, setCodeforcesStatus] = useState('not-verified')
   const [verificationBaselineIds, setVerificationBaselineIds] = useState(null)
+  const [verificationSubmissionId, setVerificationSubmissionId] = useState(null)
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
@@ -33,6 +34,7 @@ const Login = () => {
     if (event.target.name === 'codeforces_handle') {
       setCodeforcesStatus('not-verified')
       setVerificationBaselineIds(null)
+      setVerificationSubmissionId(null)
     }
   }
 
@@ -104,6 +106,7 @@ const Login = () => {
       }
 
       setCodeforcesStatus('verified')
+      setVerificationSubmissionId(submission.id)
       setMessage('Codeforces verified. You can now submit the final registration.')
     } catch (verificationError) {
       setCodeforcesStatus('not-verified')
@@ -174,12 +177,15 @@ const Login = () => {
         throw new Error('Email confirmation is still enabled in Supabase. Disable Confirm email in Authentication settings, then try again.')
       }
 
-      const { error: profileError } = await supabase.rpc('complete_codeforces_verification', {
-        p_full_name: profile.full_name,
-        p_student_id: profile.student_id,
-        p_department: profile.department,
-        p_batch: profile.batch,
-        p_codeforces_handle: profile.codeforces_handle
+      const { error: profileError } = await supabase.functions.invoke('verify-codeforces', {
+        body: {
+          full_name: profile.full_name,
+          student_id: profile.student_id,
+          department: profile.department,
+          batch: profile.batch,
+          codeforces_handle: profile.codeforces_handle,
+          submission_id: verificationSubmissionId
+        }
       })
 
       if (profileError) {
@@ -199,6 +205,7 @@ const Login = () => {
     setMode(nextMode)
     setCodeforcesStatus('not-verified')
     setVerificationBaselineIds(null)
+    setVerificationSubmissionId(null)
     setError('')
     setMessage('')
   }
