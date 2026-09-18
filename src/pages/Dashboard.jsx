@@ -106,8 +106,7 @@ const Dashboard = () => {
         <article className="glass-panel dashboard-card dashboard-profile-card">
           <div className="dashboard-card-heading"><UserRound size={22} /><h2>Personal information</h2></div>
           <p className="dashboard-email">{user.email}</p>
-          <p className="dashboard-muted">Complete your student profile to connect your contest identity.</p>
-          <Link className="btn-primary" to="/profile">Set up profile</Link>
+          <p className="dashboard-muted">Your verified student profile is connected to your contest identity.</p>
         </article>
         <article className="glass-panel dashboard-card">
           <div className="dashboard-card-heading"><ShieldCheck size={22} /><h2>Monthly contest rating</h2></div>

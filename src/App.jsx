@@ -13,6 +13,7 @@ const Navbar = ({ theme, toggleTheme }) => {
   const [latestRating, setLatestRating] = React.useState(null);
   const [chatOpen, setChatOpen] = React.useState(false);
   const [chatMessages, setChatMessages] = React.useState([]);
+  const [unreadChatCount, setUnreadChatCount] = React.useState(0);
   const location = useLocation();
   const { user } = useAuth();
 
@@ -25,6 +26,8 @@ const Navbar = ({ theme, toggleTheme }) => {
     if (!user) {
       setProfile(null)
       setLatestRating(null)
+      setChatMessages([])
+      setUnreadChatCount(0)
       return
     }
 
@@ -36,11 +39,22 @@ const Navbar = ({ theme, toggleTheme }) => {
       setProfile(profileData)
       setLatestRating(ratingData)
       const { data: messages } = await supabase.from('admin_messages').select('id, title, message, created_at').or(`recipient_id.is.null,recipient_id.eq.${user.id}`).order('created_at', { ascending: true }).limit(50)
-      setChatMessages(messages ?? [])
+        const nextMessages = messages ?? []
+        const seenMessageIds = JSON.parse(localStorage.getItem(`seenChatMessages:${user.id}`) || '[]')
+        setChatMessages(nextMessages)
+        setUnreadChatCount(nextMessages.filter((item) => !seenMessageIds.includes(item.id)).length)
     }
 
     loadAccountSummary()
   }, [user]);
+
+  const markChatMessagesSeen = () => {
+    if (!user) return
+    const seenMessageIds = chatMessages.map((item) => item.id)
+    localStorage.setItem(`seenChatMessages:${user.id}`, JSON.stringify(seenMessageIds))
+    setUnreadChatCount(0)
+    setChatOpen(true)
+  }
 
   const navLinks = [
     { name: 'Home', path: '/', icon: <Terminal size={18} /> },
@@ -117,12 +131,11 @@ const Navbar = ({ theme, toggleTheme }) => {
                 {profile?.interests && <span>Interests: {profile.interests}</span>}
                 {(profile?.github_url || profile?.linkedin_url) && <div className="account-socials">{profile.github_url && <a href={profile.github_url} target="_blank" rel="noreferrer" aria-label="GitHub profile">GitHub <ExternalLink size={13} /></a>}{profile.linkedin_url && <a href={profile.linkedin_url} target="_blank" rel="noreferrer" aria-label="LinkedIn profile">LinkedIn <ExternalLink size={13} /></a>}</div>}
                 {latestRating && <div className="account-rating"><span>Latest university rating</span><strong>{latestRating.rating} <em className={latestRating.rating_change >= 0 ? 'rating-positive' : 'rating-negative'}>{latestRating.rating_change >= 0 ? '+' : ''}{latestRating.rating_change}</em></strong></div>}
-                <Link className="account-popover-link" to="/profile">Edit profile</Link>
               </div>
             )}
           </div>
 
-          {user && <div className="chat-menu"><button className="nav-icon-button" type="button" onClick={() => { setChatOpen(prev => !prev); setIsOpen(false) }} aria-label="Open CPWING chat" title="CPWING chat"><MessageCircle size={19} />{chatMessages.length > 0 && <span className="chat-count">{chatMessages.length}</span>}</button>{chatOpen && <div className="chat-popover"><div className="chat-popover-header"><strong>CPWING chat</strong><button type="button" onClick={() => setChatOpen(false)} aria-label="Close chat"><X size={16} /></button></div><div className="chat-popover-thread">{chatMessages.length === 0 ? <p className="chat-empty">No messages yet.</p> : chatMessages.map(item => <div className="chat-popover-message" key={item.id}><strong>{item.title}</strong><span>{item.message}</span><time>{new Date(item.created_at).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}</time></div>)}</div><Link className="chat-popover-footer" to="/notifications" onClick={() => setChatOpen(false)}>View all updates</Link></div>}</div>}
+          {user && <div className="chat-menu"><button className="nav-icon-button" type="button" onClick={() => { markChatMessagesSeen(); setIsOpen(false) }} aria-label="Open CPWING chat" title="CPWING chat"><MessageCircle size={19} />{unreadChatCount > 0 && <span className="chat-count">{unreadChatCount}</span>}</button>{chatOpen && <div className="chat-popover"><div className="chat-popover-header"><strong>CPWING chat</strong><button type="button" onClick={() => setChatOpen(false)} aria-label="Close chat"><X size={16} /></button></div><div className="chat-popover-thread">{chatMessages.length === 0 ? <p className="chat-empty">No messages yet.</p> : chatMessages.map(item => <div className="chat-popover-message" key={item.id}><strong>{item.title}</strong><span>{item.message}</span><time>{new Date(item.created_at).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}</time></div>)}</div><Link className="chat-popover-footer" to="/notifications" onClick={() => setChatOpen(false)}>View all updates</Link></div>}</div>}
           
           <button onClick={toggleTheme} style={{ 
             background: 'rgba(128, 128, 128, 0.1)', border: '1px solid var(--glass-border)', 
@@ -134,7 +147,11 @@ const Navbar = ({ theme, toggleTheme }) => {
           </button>
         </div>
 
-        <div className="mobile-actions" style={{ alignItems: 'center', gap: '0.75rem' }}>
+        <div className="mobile-actions" style={{ alignItems: 'center', gap: '0.55rem' }}>
+          <Link className="mobile-account-link" to={user ? '/dashboard' : '/login'} aria-label={user ? 'Open dashboard' : 'Sign in'} title={user ? 'Dashboard' : 'Sign in'}>
+            {profile?.avatar_url ? <img className="account-avatar" src={profile.avatar_url} alt="" /> : <UserRound size={19} />}
+          </Link>
+          {user && <button className="nav-icon-button mobile-chat-button" type="button" onClick={markChatMessagesSeen} aria-label="Open CPWING chat" title="CPWING chat"><MessageCircle size={19} />{unreadChatCount > 0 && <span className="chat-count">{unreadChatCount}</span>}</button>}
           <button onClick={toggleTheme} style={{
             background: 'rgba(128, 128, 128, 0.1)', border: '1px solid var(--glass-border)',
             color: 'var(--text-primary)', cursor: 'pointer', display: 'flex',
@@ -142,6 +159,7 @@ const Navbar = ({ theme, toggleTheme }) => {
           }} aria-label="Toggle theme">
             {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
           </button>
+          {user && chatOpen && <div className="mobile-chat-popover"><div className="chat-popover-header"><strong>CPWING chat</strong><button type="button" onClick={() => setChatOpen(false)} aria-label="Close chat"><X size={16} /></button></div><div className="chat-popover-thread">{chatMessages.length === 0 ? <p className="chat-empty">No messages yet.</p> : chatMessages.map(item => <div className="chat-popover-message" key={item.id}><strong>{item.title}</strong><span>{item.message}</span><time>{new Date(item.created_at).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}</time></div>)}</div><Link className="chat-popover-footer" to="/notifications" onClick={() => setChatOpen(false)}>View all updates</Link></div>}
         </div>
       </div>
 
@@ -198,11 +216,15 @@ const Navbar = ({ theme, toggleTheme }) => {
         .mobile-drawer { display: none; }
         .mobile-actions { display: none; }
         .mobile-quick-links { display: none; }
+        .mobile-account-link { display: inline-flex; align-items: center; justify-content: center; color: var(--text-secondary); min-width: 34px; min-height: 34px; }
+        .mobile-chat-button { flex: 0 0 auto; }
+        .mobile-chat-popover { position: fixed; top: 4.5rem; right: 0.75rem; z-index: 80; width: min(360px, calc(100vw - 1.5rem)); overflow: hidden; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--radius-sm); box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4); }
         @media (max-width: 768px) { .desktop-nav { display: none !important; } }
         @media (max-width: 768px) { .mobile-actions { display: flex !important; } }
         @media (max-width: 768px) { .mobile-quick-links { display: block !important; } }
         @media (max-width: 768px) { .mobile-drawer { display: block; } }
         @media (max-width: 420px) { .brand-text { display: none !important; } }
+        @media (max-width: 360px) { .container { padding-left: 0.75rem; padding-right: 0.75rem; } .mobile-actions { gap: 0.3rem !important; } }
       `}</style>
     </nav>
   )
@@ -237,7 +259,6 @@ import Contests from './pages/Contests'
 import Whiteboard from './pages/Whiteboard'
 import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
-import Profile from './pages/Profile'
 import AdminContest from './pages/AdminContest'
 import AdminMessages from './pages/AdminMessages'
 import Leaderboard from './pages/Leaderboard'
@@ -294,7 +315,6 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route element={<ProtectedRoute />}>
               <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/profile" element={<Profile />} />
               <Route path="/contest-history" element={<ContestHistory />} />
               <Route path="/analytics" element={<RatingAnalytics />} />
                             <Route path="/notifications" element={<Notifications />} />
