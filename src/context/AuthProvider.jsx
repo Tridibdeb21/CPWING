@@ -27,6 +27,22 @@ export function AuthProvider({ children }) {
     }
   }, [])
 
+  useEffect(() => {
+    const metadata = session?.user?.user_metadata
+    const requiredFields = ['full_name', 'student_id', 'codeforces_handle', 'department', 'batch']
+    if (!session?.user || requiredFields.some((field) => !metadata?.[field])) return
+
+    supabase.from('profiles').upsert({
+      id: session.user.id,
+      full_name: metadata.full_name,
+      student_id: metadata.student_id,
+      codeforces_handle: metadata.codeforces_handle,
+      department: metadata.department,
+      batch: metadata.batch,
+      updated_at: new Date().toISOString()
+    }, { onConflict: 'id', ignoreDuplicates: true })
+  }, [session])
+
   const signOut = () => supabase.auth.signOut()
 
   return <AuthContext.Provider value={{ session, user: session?.user ?? null, loading, signOut }}>{children}</AuthContext.Provider>
