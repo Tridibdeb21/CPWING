@@ -1,7 +1,8 @@
-﻿import { useState } from 'react'
+﻿import { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { ArrowRight, CheckCircle2, ExternalLink, KeyRound, LoaderCircle, LogIn } from 'lucide-react'
 import { supabase } from '../lib/supabase'
+import { useAuth } from '../context/useAuth'
 
 const verificationProblem = {
   name: 'Watermelon (4A)',
@@ -13,6 +14,7 @@ const verificationProblem = {
 const Login = () => {
   const navigate = useNavigate()
   const location = useLocation()
+  const { user } = useAuth()
   const [mode, setMode] = useState(location.state?.verificationRequired ? 'signup' : 'login')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -28,6 +30,24 @@ const Login = () => {
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
+
+  useEffect(() => {
+    if (!user) return
+
+    let mounted = true
+    Promise.all([
+      supabase.from('codeforces_verifications').select('user_id').eq('user_id', user.id).maybeSingle(),
+      supabase.from('profiles').select('codeforces_handle, codeforces_verified').eq('id', user.id).maybeSingle()
+    ]).then(([{ data: verification }, { data: profile }]) => {
+      if (mounted && verification && profile?.codeforces_verified && profile.codeforces_handle) {
+        navigate(location.state?.from?.pathname || '/dashboard', { replace: true })
+      }
+    })
+
+    return () => {
+      mounted = false
+    }
+  }, [location.state, navigate, user])
 
   const updateProfile = (event) => {
     setProfile({ ...profile, [event.target.name]: event.target.value })
